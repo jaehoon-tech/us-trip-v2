@@ -1,17 +1,27 @@
 // 정산: 결제자 기반 최소 송금 계산 / 정산완료 제외 / 카테고리 통계
 const Expense = {
+  syncRate() {
+    const i = $('exp-rate'); if (document.activeElement !== i) i.value = this.rate();
+    const m = Store.trip.meta, auto = !this.localRate && !m.rateManual && Fx.rate;
+    $('exp-rate-note').textContent = auto ? '실시간 환율 (카드 수수료 별도) · 비우면 자동' : '수동 입력값 · 비우면 자동';
+  },
   fmt(n) { return '$' + n.toFixed(2); },
-  rate() { return this.localRate || Store.trip.meta.rate || 1400; },
+  rate() { const m = Store.trip.meta; return this.localRate || (m.rateManual ? m.rate : (Fx.rate || m.rate)) || 1400; },
   cats() { return Store.trip.meta.categories; },
   icon(c) { const f = this.cats().find(x => x[0] === c); return f ? f[1] : '📦'; },
 
   init() {
-    const days = Store.trip.days.map(d => `<option value="${d.id}일차">${d.id}일차</option>`).join('');
+    const days = Store.trip.days.map(d => `<option value="${d.id}일차">${Store.dayText(d.id)}</option>`).join('');
     $('exp-f-cat').innerHTML = '<option value="all">카테고리 전체</option>' + this.cats().map(([c]) => `<option>${esc(c)}</option>`).join('');
     $('exp-f-day').innerHTML = '<option value="all">일차 전체</option>' + days;
     ['exp-f-cat', 'exp-f-day', 'exp-f-state', 'exp-f-sort'].forEach(id => $(id).onchange = () => this.renderList());
-    $('exp-rate').value = this.rate();
-    $('exp-rate').onchange = e => { const v = parseFloat(e.target.value); if (!(v > 0)) return; if (Edit.isEditor) { Store.trip.meta.rate = v; Store.save(); } else this.localRate = v; this.render(); };
+    this.syncRate();
+    $('exp-rate').onchange = e => {
+      const v = parseFloat(e.target.value);
+      if (Edit.isEditor) { if (v > 0) { Store.trip.meta.rate = v; Store.trip.meta.rateManual = true; } else delete Store.trip.meta.rateManual; Store.save(); }
+      else this.localRate = v > 0 ? v : null;
+      this.render();
+    };
   },
 
   // 정산 대상(미정산) 지출로 순잔액 계산 → 최소 송금
@@ -38,6 +48,7 @@ const Expense = {
   },
 
   render() {
+    this.syncRate();
     const all = Store.allExpenses();
     const open = all.filter(e => !e.settled);
     const total = all.reduce((s, e) => s + e.amount, 0);
@@ -70,16 +81,22 @@ const Expense = {
       (fs === 'all' || (fs === 'done') === e.settled));
     const dn = e => parseInt(e.day) || 0;
     list.sort((a, b) => so === 'day' ? dn(a) - dn(b) || a._i - b._i : b._i - a._i);
-    $('exp-list').innerHTML = list.length ? list.map(e => `
+    let lastDay = null;
+    const head = e => {
+      if (so !== 'day' || e.day === lastDay) return '';
+      lastDay = e.day;
+      const sum = list.filter(x => x.day === e.day).reduce((a, x) => a + x.amount, 0);
+      return `<div class="day-head"><span>${esc(Store.dayText(e.day))}</span><span>${this.fmt(sum)}</span></div>`;
+    };
+    $('exp-list').innerHTML = list.length ? list.map(e => head(e) + `
       <div class="exp-item ${e.settled ? 'settled' : ''}">
         <input type="checkbox" class="settle-chk" data-action="exp-settle" data-id="${esc(e.id)}" ${e.settled ? 'checked' : ''} title="정산완료">
         <div class="exp-info" data-action="exp-edit" data-id="${esc(e.id)}">
-          <div class="exp-name">${this.icon(e.category)} ${esc(e.category)} | ${esc(e.desc)}</div>
-          <div class="exp-meta">${esc(e.day)} · 💳 ${esc(e.payer)} · 👥 ${e.members.length === Store.trip.meta.members.length ? '전체' : esc(e.members.join(', '))}${e.note ? ' · ' + esc(e.note) : ''}</div>
+          <div class="exp-name">${this.icon(e.category)} ${esc(e.category)} | ${esc(e.desc)}${Receipts.has(e.id) ? ` <span class="rcpt" data-action="exp-receipt" data-id="${esc(e.id)}">📎</span>` : ''}</div>
+          <div class="exp-meta">${esc(Store.dayText(e.day))} · 💳 ${esc(e.payer)} · 👥 ${e.members.length === Store.trip.meta.members.length ? '전체' : esc(e.members.join(', '))}${e.note ? ' · ' + esc(e.note) : ''}</div>
           ${e.breakdown && e.breakdown.length ? `<div class="exp-bd">${e.breakdown.map(x => `${esc(x.label)} ${this.fmt(x.amount)}`).join(' + ')}</div>` : ''}
         </div>
-        <div class="exp-amount">${this.fmt(e.amount)}</div>
-        
+        <div class="exp-amount">${this.fmt(e.amount)}<small>≈${Math.round(e.amount * this.rate() / 10000 * 10) / 10}만</small></div>
       </div>`).join('') : '<div class="empty-msg">조건에 맞는 내역이 없어요.</div>';
   },
 
@@ -94,22 +111,34 @@ const Expense = {
         { key: 'amount', label: '금액 ($)', type: 'number', value: e ? e.amount : '', ph: '0.00', focus: !e },
         { key: 'desc', label: '내용', value: e ? e.desc : '', ph: '예: 인앤아웃 버거' },
         { key: 'category', label: '카테고리', type: 'select', value: e ? e.category : '식비', options: this.cats().map(([c, i]) => ({ v: c, l: `${i} ${c}` })) },
-        { key: 'day', label: '일차', type: 'select', value: e ? e.day : (today ? today + '일차' : '1일차'), options: Store.trip.days.map(d => ({ v: d.id + '일차', l: d.label })) },
+        { key: 'day', label: '일차', type: 'select', value: e ? e.day : (today ? today + '일차' : '1일차'), options: Store.trip.days.map(d => ({ v: d.id + '일차', l: Store.dayText(d.id) })) },
         { key: 'payer', label: '결제한 사람', type: 'select', value: e ? e.payer : (LS.get('usTripLastPayer', members[0])), options: members.map(m => ({ v: m, l: m })) },
-        { key: 'members', label: '정산 포함 인원', type: 'checks', options: members, value: e ? e.members : members }
+        { key: 'members', label: '정산 포함 인원', type: 'checks', options: members, value: e ? e.members : members },
+        { key: 'receipt', label: '📷 영수증 사진 (이 기기에만 저장, 공개 안 됨)', type: 'file' }
       ],
-      buttons: e ? [{ label: '삭제', cls: 'mbtn-red', fn: () => { Sheet.close(); this.remove(e.id); } }] : [],
-      onSave: v => {
+      buttons: [
+        ...(e && Receipts.has(e.id) ? [{ label: '사진 삭제', fn: async () => { await Receipts.del(e.id); Sheet.close(); this.render(); showToast('사진을 지웠어요'); } }] : []),
+        ...(e ? [{ label: '삭제', cls: 'mbtn-red', fn: () => { Sheet.close(); this.remove(e.id); } }] : [])
+      ],
+      onSave: async v => {
         const amount = parseFloat(v.amount);
         if (!v.desc || isNaN(amount) || amount <= 0) return showToast('내용과 올바른 금액을 입력해주세요.');
         if (!v.members.length) return showToast('정산 포함 인원을 1명 이상 선택해주세요.');
         const data = { day: v.day, category: v.category, desc: v.desc, amount, payer: v.payer, members: v.members };
         if (e) { Object.assign(e, data); }
-        else Store.trip.expenses.push({ id: 'x_' + Date.now(), settled: false, ...data });
+        let rid = e && e.id;
+        if (!e) { rid = 'x_' + Date.now(); Store.trip.expenses.push({ id: rid, settled: false, ...data }); }
+        if (v.receipt) { try { await Receipts.put(rid, await Receipts.shrink(v.receipt)); } catch (x) { showToast('⚠️ 사진 저장 실패'); } }
         LS.set('usTripLastPayer', v.payer);
         Store.save(); Sheet.close(); this.render(); showToast(e ? '수정되었습니다' : '지출이 등록되었습니다 ✅');
       }
     });
+  },
+  copySummary() {
+    const open = Store.allExpenses().filter(e => !e.settled), r = this.compute(open);
+    const lines = ['💸 금쪽이 정산 (미정산 기준)', `정산 대상 합계 $${open.reduce((s, e) => s + e.amount, 0).toFixed(2)} (≈${Math.round(open.reduce((s, e) => s + e.amount, 0) * this.rate() / 10000)}만원)`, ''];
+    if (r.tr.length) r.tr.forEach(t => lines.push(`${t.from} ➔ ${t.to}  $${t.amt.toFixed(2)} (≈${Math.round(t.amt * this.rate()).toLocaleString()}원)`)); else lines.push('송금할 내역 없음 🎉');
+    copyText(lines.join('\n'));
   },
   settle(id, v) { const e = Store.trip.expenses.find(x => String(x.id) === String(id)); if (e) { e.settled = v; Store.save(); } this.render(); },
   remove(id) {
