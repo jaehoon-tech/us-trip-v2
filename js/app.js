@@ -52,7 +52,7 @@ document.addEventListener('click', e => {
   const d = el.dataset;
   switch (d.action) {
     case 'copy': copyText(d.text); break;
-    case 'sch-add': Edit.placeSheet(Number(d.day), null); break;
+    case 'sch-add': Shared.enabled ? Shared.needMe(() => Edit.placeSheet(Number(d.day), null)) : Edit.placeSheet(Number(d.day), null); break;
     case 'sch-edit': Edit.placeSheet(Number(d.day), d.id); break;
     case 'sch-up': Edit.movePlace(Number(d.day), d.id, -1); break;
     case 'sch-down': Edit.movePlace(Number(d.day), d.id, 1); break;
@@ -60,13 +60,13 @@ document.addEventListener('click', e => {
     case 'bk-go': Bookings.go(d.id); break;
     case 'bk-add': Edit.bookingSheet(null); break;
     case 'bk-edit': Edit.bookingSheet(d.id); break;
-    case 'chk-add': Checklist.add(Number(d.g)); break;
+    case 'chk-add': Shared.enabled ? Shared.needMe(() => Checklist.add(Number(d.g))) : Checklist.add(Number(d.g)); break;
     case 'chk-del': Checklist.remove(Number(d.g), d.id); break;
     case 'photo-close': $('photo-view').style.display = 'none'; break;
     case 'exp-receipt': Receipts.show(d.id); break;
     case 'exp-copy': Expense.copySummary(); break;
-    case 'exp-add': Expense.sheet(null); break;
-    case 'exp-edit': if (Edit.isEditor) Expense.sheet(d.id); break;
+    case 'exp-add': Shared.enabled ? Shared.needMe(() => Expense.sheet(null)) : Expense.sheet(null); break;
+    case 'exp-edit': Expense.openEdit(d.id); break;
     case 'day-fold': Schedule.toggleCollapse(Number(d.day)); break;
   }
 });
@@ -94,7 +94,7 @@ async function boot() {
   Checklist.render(); Expense.init(); Expense.render();
   if (Store.discarded) showToast('원본 데이터가 새로 업데이트되어 임시 수정본을 정리했어요');
   updateDday(); setInterval(updateDday, 60000);
-  Weather.load(); Fx.load(); Tip.init(); Drag.init();
+  Weather.load(); Fx.load(); Tip.init(); Drag.init(); Shared.init();
   setInterval(() => Live.update(), 60000);
   MapView.load();
   registerSW();
