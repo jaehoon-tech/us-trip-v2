@@ -61,12 +61,14 @@ const Schedule = {
               ${p.address ? `<button class="btn-copy" data-action="copy" data-text="${esc(p.address)}">📋 주소</button>` : ''}
               ${p.bookingId && Store.booking(p.bookingId) ? `<button class="btn-copy bk-link" data-action="bk-go" data-id="${esc(p.bookingId)}">🎫 예약</button>` : ''}
               ${flightLinks(p.name + ' ' + p.desc)}
-              <span class="edit-only">
+              ${p.shared ? `<span class="by-chip">👤 ${esc(p.by || '')}</span>` : ''}
+              ${p.shared && Shared.mine(p) ? `<button class="btn-copy" data-action="sch-edit" data-day="${day.id}" data-id="${esc(p.id)}">✏️ 수정</button>` : ''}
+              ${p.shared ? '' : `<span class="edit-only">
                 <span class="drag-h" data-day="${day.id}" title="길게 눌러 끌어서 순서 변경">⠿</span>
                 <button class="btn-copy" data-action="sch-up" data-day="${day.id}" data-id="${esc(p.id)}">▲</button>
                 <button class="btn-copy" data-action="sch-down" data-day="${day.id}" data-id="${esc(p.id)}">▼</button>
                 <button class="btn-copy" data-action="sch-edit" data-day="${day.id}" data-id="${esc(p.id)}">✏️ 수정</button>
-              </span>
+              </span>`}
             </div>
           </div></div>
           ${idx < places.length - 1 && p.nextDist ? `<div class="timeline-distance">${p.nextMode === 'flight' ? '✈️' : p.nextMode === 'walk' ? '🚶' : '🚗'} ${esc(p.nextDist)}</div>` : ''}
@@ -81,7 +83,7 @@ const Schedule = {
         </div>
         ${day.driveInfo ? `<div class="drive-badge">🛣️ ${esc(day.driveInfo)}</div>` : ''}
         <div class="timeline">${items}</div>
-        <button class="btn-add-item edit-only" data-action="sch-add" data-day="${day.id}">+ 장소 추가하기</button>
+        <button class="btn-add-item ${typeof Shared !== 'undefined' && Shared.enabled ? '' : 'edit-only'}" data-action="sch-add" data-day="${day.id}">+ 장소 추가하기</button>
       </div>`;
     }).join('');
     if (typeof Live !== 'undefined') Live.update();
