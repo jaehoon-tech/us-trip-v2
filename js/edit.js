@@ -77,9 +77,11 @@ const Edit = {
   // ---------- 장소 ----------
   placeSheet(dayId, placeId) {
     const day = Store.day(dayId);
-    const p = placeId ? day.places.find(x => x.id === placeId) : { type: 'visit' };
+    const sharedP = placeId && Shared.enabled ? Shared.cache.places[placeId] : null;
+    const p = placeId ? (sharedP || day.places.find(x => x.id === placeId)) : { type: 'visit' };
     if (!p) return;
     const isNew = !placeId;
+    const shared = !!sharedP || (isNew && Shared.enabled);
     Sheet.open({
       title: isNew ? `장소 추가 · ${day.label}` : '장소 수정',
       fields: [
@@ -94,10 +96,10 @@ const Edit = {
         { key: 'day', label: '일차', type: 'select', value: dayId, options: Store.trip.days.map(d => ({ v: d.id, l: d.label })) }
       ],
       buttons: isNew ? [] : [
-        { label: '복제', fn: () => { this.dupPlace(dayId, placeId); Sheet.close(); } },
+        ...(shared ? [] : [{ label: '복제', fn: () => { this.dupPlace(dayId, placeId); Sheet.close(); } }]),
         { label: '삭제', cls: 'mbtn-red', fn: () => { Sheet.close(); this.delPlace(dayId, placeId); } }
       ],
-      onSave: v => this.savePlace(dayId, placeId, v)
+      onSave: v => shared ? this.saveShared(dayId, placeId, v) : this.savePlace(dayId, placeId, v)
     });
   },
   async savePlace(dayId, placeId, v) {
@@ -123,12 +125,32 @@ const Edit = {
     else if (target.id !== day.id) { day.places = day.places.filter(x => x.id !== p.id); target.places.push(p); }
     Store.save(); Sheet.close(); this.rerender(); showToast('저장되었습니다 ✅');
   },
+  // 모두에게 공유되는 장소 저장 (Firestore)
+  async saveShared(dayId, placeId, v) {
+    if (!v.name) return showToast('장소명을 입력해주세요.');
+    const old = placeId ? Shared.cache.places[placeId] : null;
+    let geo = null;
+    if (Sheet.picked && v.address === Sheet.picked.address) geo = Sheet.picked;
+    else if (v.address && (!old || v.address !== old.address)) {
+      showToast('📍 위치 찾는 중...');
+      geo = await geocode(v.address);
+      if (!geo) showToast('⚠️ 위치를 찾지 못했어요 (지도 핀 없이 저장)');
+    }
+    const doc = { dayId: Number(v.day), name: v.name, type: v.type, time: v.time || '', desc: v.desc || '', nextDist: v.nextDist || '', nextMode: v.nextMode || 'car',
+      address: geo ? (geo.address || v.address) : v.address, lat: geo ? geo.lat : (old ? old.lat : null), lng: geo ? geo.lng : (old ? old.lng : null), by: old ? old.by : Shared.me };
+    Shared.put('places', placeId || Shared.newId('p_'), doc);
+    Sheet.close(); showToast('저장했어요 · 모두에게 보여요 ✅');
+  },
   dupPlace(dayId, id) {
     const day = Store.day(dayId), i = day.places.findIndex(x => x.id === id);
     const c = JSON.parse(JSON.stringify(day.places[i])); c.id = 'p_' + Date.now(); c.name += ' (복제)';
     day.places.splice(i + 1, 0, c); Store.save(); this.rerender(); showToast('복제했어요');
   },
   delPlace(dayId, id) {
+    if (Shared.enabled && Shared.cache.places[id]) {
+      if (!Shared.mine(Shared.cache.places[id])) return showToast('추가한 사람만 삭제할 수 있어요');
+      return showConfirm('이 장소를 삭제할까요? (모두에게서 사라져요)', () => Shared.del('places', id));
+    }
     showConfirm('이 장소를 삭제할까요?', () => {
       const day = Store.day(dayId); day.places = day.places.filter(x => x.id !== id);
       Store.save(); this.rerender();
