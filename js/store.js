@@ -37,11 +37,26 @@ const Store = {
   // '2026-12-25 16:00' → '12/25(금) 16:00'
   dtText(s) { const m = /^(\d{4}-\d{2}-\d{2})(.*)$/.exec(s || ''); return m ? this.dateText(m[1]) + m[2] : (s || ''); },
   day(id) { return this.trip.days.find(d => d.id === id); },
-  getPlaces(dayId) { const d = this.day(dayId); return d ? d.places : []; },
+  getPlaces(dayId) {
+    const d = this.day(dayId); if (!d) return [];
+    const sh = (typeof Shared !== 'undefined' && Shared.enabled) ? Shared.list('places').filter(p => Number(p.dayId) === Number(dayId)).sort((a, b) => (a.ts || 0) - (b.ts || 0)).map(p => ({ ...p, shared: true })) : [];
+    if (!sh.length) return d.places;
+    const min = t => { const m = /^(\d{1,2}):(\d{2})/.exec(t || ''); return m ? Number(m[1]) * 60 + Number(m[2]) : null; };
+    const out = [...d.places];
+    sh.forEach(p => {
+      const m = min(p.time); let idx = -1;
+      if (m != null) idx = out.findIndex(q => { const qm = min(q.time); return qm != null && qm > m; });
+      if (idx < 0) { const last = out.length - 1; idx = (last >= 0 && out[last].type === 'sleep') ? last : out.length; }
+      out.splice(idx, 0, p);
+    });
+    return out;
+  },
   booking(id) { return (this.trip.bookings || []).find(b => b.id === id); },
   allExpenses() {
     const first = this.trip.meta.members[0];
-    return (this.trip.expenses || []).map((e, i) => ({ ...e, _i: i, payer: e.payer || first, settled: !!e.settled }));
+    const base = (this.trip.expenses || []).map((e, i) => ({ ...e, _i: i, payer: e.payer || first, settled: !!e.settled }));
+    const sh = (typeof Shared !== 'undefined' && Shared.enabled) ? Shared.list('expenses').sort((a, b) => (a.ts || 0) - (b.ts || 0)).map((e, i) => ({ ...e, _i: 10000 + i, shared: true, payer: e.payer || first, settled: !!e.settled, members: e.members || [] })) : [];
+    return [...base, ...sh];
   },
   // 준비물 체크 상태는 사람마다 따로 (내 폰에만 저장)
   isChecked(id) { return localStorage.getItem(id) === 'true'; },
