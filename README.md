@@ -12,6 +12,11 @@
 - 토큰: GitHub → Settings → Developer settings → Fine-grained tokens → 이 저장소만, Contents: Read and write
 - 편집자 해제: `?edit=0`
 
+## 실시간 공유 (Firebase, 선택)
+`js/config.js` 의 `FIREBASE` 에 projectId / apiKey / room(우리끼리만 아는 비밀 코드) 을 채우면 켜져요.
+지출·장소·준비물을 친구들도 추가하고 서로 바로 보여요. 비워두면 기존처럼 편집자만 입력해요.
+- 기기에서 편집자 등록/해제: 상단 파란 배너를 빠르게 5번 탭
+
 ## 비공개 정보
 출입문 코드/PIN 은 예약 수정 시트의 "🔒 비공개 메모"에 적으면 이 기기에만 저장되고 GitHub 에 올라가지 않습니다.
 
