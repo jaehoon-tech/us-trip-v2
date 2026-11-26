@@ -9,11 +9,11 @@ function switchTab(tab) {
 }
 
 function updateDday() {
-  const diff = new Date(Store.trip.meta.departure).getTime() - Date.now();
+  const diff = new Date(Store.trip.meta.departure).getTime() - Clock.now().getTime();
   const b = $('dday-banner');
   if (diff < 0) {
     const t = Schedule.todayDay(), end = new Date(Store.trip.meta.tripEnd + 'T23:59:59');
-    if (Date.now() > end) { b.textContent = '🏁 금쪽이들의 세계정복, 무사히 완료!'; return; }
+    if (Clock.now() > end) { b.textContent = '🏁 금쪽이들의 세계정복, 무사히 완료!'; return; }
     b.innerHTML = t ? `🇺🇸 여행 <span style="font-size:22px;font-weight:900;">${t}일차</span> · ${esc(Store.day(t).title.split('|')[1] || '')}` : '✈️ 미국 서부 여행 중! 안전하고 즐거운 여행 되세요!';
     return;
   }
@@ -62,6 +62,9 @@ document.addEventListener('click', e => {
     case 'bk-edit': Edit.bookingSheet(d.id); break;
     case 'chk-add': Checklist.add(Number(d.g)); break;
     case 'chk-del': Checklist.remove(Number(d.g), d.id); break;
+    case 'photo-close': $('photo-view').style.display = 'none'; break;
+    case 'exp-receipt': Receipts.show(d.id); break;
+    case 'exp-copy': Expense.copySummary(); break;
     case 'exp-add': Expense.sheet(null); break;
     case 'exp-edit': if (Edit.isEditor) Expense.sheet(d.id); break;
     case 'day-fold': Schedule.toggleCollapse(Number(d.day)); break;
@@ -85,15 +88,18 @@ async function boot() {
     $('schedule-container').innerHTML = '<div class="empty-msg">data/trip.json 을 확인해주세요.<br>(file:// 로 열면 안 되고 웹서버/GitHub Pages 로 열어야 해요)</div>';
     return;
   }
-  Theme.init(); Edit.init();
+  Theme.init(); Edit.init(); Clock.init(); await Receipts.init();
   if (Schedule.todayDay()) Schedule.selected = new Set([Schedule.todayDay()]);
   Schedule.renderFilters(); Schedule.render(); Bookings.render();
   Checklist.render(); Expense.init(); Expense.render();
   if (Store.discarded) showToast('원본 데이터가 새로 업데이트되어 임시 수정본을 정리했어요');
   updateDday(); setInterval(updateDday, 60000);
-  Weather.load();
+  Weather.load(); Fx.load(); Tip.init(); Drag.init();
+  setInterval(() => Live.update(), 60000);
   MapView.load();
   registerSW();
+  const off = () => $('offline-bar').style.display = navigator.onLine ? 'none' : 'block';
+  addEventListener('online', off); addEventListener('offline', off); off();
 }
 
 function registerSW() {
