@@ -18,6 +18,7 @@
 </head>
 <body>
 <div id="mobile-wrapper">
+  <div id="offline-bar" style="display:none">📴 오프라인 · 저장된 데이터를 보고 있어요 (지도·날씨는 연결 필요)</div>
   <div id="dday-banner">✈️ 로딩 중...</div>
   <button id="btn-theme" title="다크모드">🌙</button>
   <button id="btn-edit" title="편집 모드" style="display:none">✏️</button>
@@ -31,12 +32,15 @@
 
   <div id="tab-container">
     <div id="view-schedule" class="tab-view active">
+      <div id="clock-row"></div>
       <div id="weather-bar"><div class="weather-msg">🌤️ 날씨 정보 불러오는 중...</div></div>
 
       <div class="cover">
         <img src="img/4man_trip.jpg" alt="금쪽이들의 세계정복" onerror="this.style.display='none';document.getElementById('img-fallback').style.display='flex'">
         <div id="img-fallback"><span style="font-size:24px">🖼️</span><span><b>img/4man_trip.jpg</b> 이미지를 확인해주세요.</span></div>
       </div>
+
+      <div id="live-card" style="display:none"></div>
 
       <details class="summary-card" open>
         <summary>📌 여행 기본 정보 &amp; 꿀팁</summary>
@@ -76,11 +80,11 @@
         <div class="exp-value">$<span id="exp-total">0.00</span> <small id="exp-total-krw"></small></div>
         <div class="sum-row"><span>✅ 정산완료</span><b id="exp-settled">$0.00</b></div>
         <div class="sum-row"><span>⏳ 정산 대상 잔여</span><b id="exp-remain">$0.00</b></div>
-        <div class="rate-row">환율 1$ = <input type="number" id="exp-rate" inputmode="numeric" class="rate-input">원</div>
+        <div class="rate-row">환율 1$ = <input type="number" id="exp-rate" inputmode="numeric" class="rate-input">원</div><span id="exp-rate-note"></span>
       </div>
 
       <div class="exp-card">
-        <h3 class="form-title">🤝 송금 가이드 (정산 대상 기준)</h3>
+        <h3 class="form-title">🤝 송금 가이드 (정산 대상 기준) <button class="btn-copy" data-action="exp-copy" style="float:right">📋 카톡용 복사</button></h3>
         <div id="exp-transfers"></div>
         <div id="exp-person-table"></div>
       </div>
@@ -89,6 +93,15 @@
         <h3 class="form-title">📊 카테고리별 지출</h3>
         <div id="exp-categories"></div>
       </div>
+
+      <details class="exp-card tip-card">
+        <summary>💵 팁 계산기</summary>
+        <div class="tip-body">
+          <div class="form-row"><input type="number" id="tip-amt" class="form-input" placeholder="식사 금액 ($, 세금 전)" inputmode="decimal" step="0.01"><input type="number" id="tip-n" class="form-input" value="4" min="1" style="max-width:80px" inputmode="numeric"><span class="tip-unit">명</span></div>
+          <div id="tip-pcts" class="tip-pcts"><button data-p="15">15%</button><button data-p="18" class="active">18%</button><button data-p="20">20%</button><button data-p="25">25%</button></div>
+          <div id="tip-res" class="tip-res"></div>
+        </div>
+      </details>
 
       <div class="exp-list-container">
         <h3 class="form-title" style="border:none">지출 상세 리스트</h3>
@@ -122,6 +135,8 @@
       <div id="sheet-actions"></div>
     </div>
   </div>
+
+  <div id="photo-view" style="display:none" data-action="photo-close"><img id="photo-img" alt="영수증"><button>✕</button></div>
 
   <div id="toast-msg"></div>
 
@@ -161,6 +176,7 @@
 <script src="js/expense.js"></script>
 <script src="js/schedule.js"></script>
 <script src="js/map.js"></script>
+<script src="js/extras.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>
