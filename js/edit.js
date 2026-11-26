@@ -48,7 +48,7 @@ const Sheet = {
 
 const Edit = {
   isEditor: false, on: false,
-  TYPES: [{ v: 'visit', l: '📍 방문' }, { v: 'food', l: '🍽️ 식사' }, { v: 'cafe', l: '☕ 카페' }, { v: 'move', l: '🚗 이동' }, { v: 'sleep', l: '🏠 숙소' }],
+  TYPES: [{ v: 'visit', l: '📍 방문' }, { v: 'food', l: '🍽️ 식사' }, { v: 'cafe', l: '☕ 카페' }, { v: 'move', l: '🚗 이동' }, { v: 'flight', l: '✈️ 항공/공항' }, { v: 'sleep', l: '🏠 숙소' }],
   typeIcon(t) { return { food: '🍽️ ', cafe: '☕ ', move: '🚗 ' }[t] || ''; },
 
   init() {
@@ -89,6 +89,7 @@ const Edit = {
         { key: 'address', label: '주소 (검색해서 고르면 지도 핀 자동 설정)', value: p.address, ac: true, ph: '장소/주소 검색' },
         { key: 'desc', label: '메모', type: 'textarea', value: p.desc },
         { key: 'nextDist', label: '다음 장소까지 이동', value: p.nextDist, ph: '예: 약 40분 · 30km' },
+        { key: 'nextMode', label: '이동 수단', type: 'select', value: p.nextMode || 'car', options: [{ v: 'car', l: '🚗 차량' }, { v: 'flight', l: '✈️ 비행' }, { v: 'walk', l: '🚶 도보' }] },
         { key: 'bookingId', label: '연결된 예약', type: 'select', value: p.bookingId || '', options: [{ v: '', l: '없음' }, ...(Store.trip.bookings || []).map(b => ({ v: b.id, l: b.title }))] },
         { key: 'day', label: '일차', type: 'select', value: dayId, options: Store.trip.days.map(d => ({ v: d.id, l: d.label })) }
       ],
@@ -115,7 +116,7 @@ const Edit = {
     }
     if (geo) { p.lat = geo.lat; p.lng = geo.lng; p.address = geo.address || v.address; delete p.approx; }
     else p.address = v.address;
-    Object.assign(p, { time: v.time || undefined, name: v.name, type: v.type, desc: v.desc, nextDist: v.nextDist || undefined, bookingId: v.bookingId || undefined });
+    Object.assign(p, { time: v.time || undefined, name: v.name, type: v.type, desc: v.desc, nextDist: v.nextDist || undefined, nextMode: v.nextMode && v.nextMode !== 'car' ? v.nextMode : undefined, bookingId: v.bookingId || undefined });
     Object.keys(p).forEach(k => p[k] === undefined && delete p[k]);
     const target = Store.day(Number(v.day));
     if (isNew) target.places.push(p);
