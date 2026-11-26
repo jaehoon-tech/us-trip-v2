@@ -8,6 +8,7 @@ const Sheet = {
       const v = f.value == null ? '' : f.value;
       let inp;
       if (f.type === 'select') inp = `<select data-key="${f.key}">${f.options.map(o => `<option value="${esc(o.v)}" ${String(o.v) === String(v) ? 'selected' : ''}>${esc(o.l)}</option>`).join('')}</select>`;
+      else if (f.type === 'file') inp = `<input type="file" accept="image/*" data-key="${f.key}">`;
       else if (f.type === 'checks') inp = `<div class="sf-checks" data-checks="${f.key}">${f.options.map(o => `<label><input type="checkbox" value="${esc(o)}" ${(f.value || []).includes(o) ? 'checked' : ''}> ${esc(o)}</label>`).join('')}</div>`;
       else if (f.type === 'textarea') inp = `<textarea data-key="${f.key}" rows="${f.rows || 3}" placeholder="${esc(f.ph || '')}">${esc(v)}</textarea>`;
       else inp = `<input data-key="${f.key}" type="${f.type || 'text'}" ${f.type === 'number' ? 'step="0.01" inputmode="decimal"' : ''} value="${esc(v)}" placeholder="${esc(f.ph || '')}" ${f.ac ? 'autocomplete="off"' : ''}>`;
@@ -23,7 +24,7 @@ const Sheet = {
   },
   values() {
     const o = {};
-    $('sheet-body').querySelectorAll('[data-key]').forEach(el => o[el.dataset.key] = el.value.trim());
+    $('sheet-body').querySelectorAll('[data-key]').forEach(el => o[el.dataset.key] = el.type === 'file' ? (el.files[0] || null) : el.value.trim());
     $('sheet-body').querySelectorAll('[data-checks]').forEach(el => o[el.dataset.checks] = [...el.querySelectorAll('input:checked')].map(i => i.value));
     return o;
   },
