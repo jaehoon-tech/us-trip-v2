@@ -27,9 +27,15 @@ const Store = {
       if (draft) { localStorage.removeItem(this.DRAFT_KEY); this.discarded = true; } // 원본이 새 버전 → 옛 초안 폐기
     }
   },
-  save() { LS.set(this.DRAFT_KEY, this.trip); this.hasDraft = true; if (window.Edit) Edit.refreshBar(); },
+  save() { LS.set(this.DRAFT_KEY, this.trip); this.hasDraft = true; if (typeof Edit !== 'undefined') Edit.refreshBar(); },
   resetDraft() { localStorage.removeItem(this.DRAFT_KEY); location.reload(); },
 
+  WD: ['일', '월', '화', '수', '목', '금', '토'],
+  dateText(dateStr) { const d = new Date(dateStr + 'T00:00:00'); return `${d.getMonth() + 1}/${d.getDate()}(${this.WD[d.getDay()]})`; },
+  // 'N일차' 문자열 또는 숫자 → "D2 12/26(토)"
+  dayText(v) { const id = parseInt(v); const d = this.day(id); return d ? `D${d.id} ${this.dateText(d.date)}` : String(v); },
+  // '2026-12-25 16:00' → '12/25(금) 16:00'
+  dtText(s) { const m = /^(\d{4}-\d{2}-\d{2})(.*)$/.exec(s || ''); return m ? this.dateText(m[1]) + m[2] : (s || ''); },
   day(id) { return this.trip.days.find(d => d.id === id); },
   getPlaces(dayId) { const d = this.day(dayId); return d ? d.places : []; },
   booking(id) { return (this.trip.bookings || []).find(b => b.id === id); },
