@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="robots" content="noindex, nofollow">
+<link rel="manifest" href="manifest.webmanifest" crossorigin="use-credentials">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="금쪽이여행">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<title>미국 서부 금쪽이들 로드트립</title>
+<script>try{var t=localStorage.getItem("usTripTheme");if(t==="dark"||(!t&&matchMedia("(prefers-color-scheme: dark)").matches))document.documentElement.classList.add("dark")}catch(e){}</script>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="mobile-wrapper">
+  <div id="dday-banner">✈️ 로딩 중...</div>
+  <button id="btn-theme" title="다크모드">🌙</button>
+  <button id="btn-edit" title="편집 모드" style="display:none">✏️</button>
+  <div id="edit-bar" style="display:none"><span id="edit-bar-msg"></span><button id="edit-settings" class="eb">⚙️</button><button id="edit-publish" class="eb eb-pub">🚀 공개</button><button id="edit-reset" class="eb">복원</button><button id="edit-done" class="eb eb-done">완료</button></div>
+
+  <div id="filter-bar-container">
+    <div id="filter-bar" style="display:flex; gap:8px; width:100%;">
+      <div class="chip active" data-day="all">전체 일정</div>
+    </div>
+  </div>
+
+  <div id="tab-container">
+    <div id="view-schedule" class="tab-view active">
+      <div id="weather-bar"><div class="weather-msg">🌤️ 날씨 정보 불러오는 중...</div></div>
+
+      <div class="cover">
+        <img src="img/4man_trip.jpg" alt="금쪽이들의 세계정복" onerror="this.style.display='none';document.getElementById('img-fallback').style.display='flex'">
+        <div id="img-fallback"><span style="font-size:24px">🖼️</span><span><b>img/4man_trip.jpg</b> 이미지를 확인해주세요.</span></div>
+      </div>
+
+      <details class="summary-card" open>
+        <summary>📌 여행 기본 정보 &amp; 꿀팁</summary>
+        <ul class="summary-list">
+          <li><strong>👥 인원/기간:</strong> 성인 4인 / 9박 11일 (26.12.25 ~ 27.01.04)</li>
+          <li><strong>🛫 출국:</strong> 12/25(금) 18:00 ICN ➔ 11:45 SFO (UA 892 직항)</li>
+          <li><strong>✈️ 국내선:</strong> 12/26(토) 21:05 SFO ➔ 22:44 LAS (UA 406)</li>
+          <li><strong>🛬 귀국:</strong> 1/3(일) 07:25 LAX ➔ SFO 환승 ➔ 1/4(월) 16:15 ICN</li>
+          <li><strong>🚗 렌터카:</strong> 12/28 07:00 LAS 픽업 ➔ 1/2 23:00 LAX 반납 (Sixt, SUV)</li>
+          <li><strong>💡 국립공원:</strong> 자이언 매표소에서 <b>'연간 패스($250)'</b> 현장 구매!<br>
+          <span class="highlight-text">⚠️ 오프라인 지도 다운로드 필수!</span></li>
+        </ul>
+      </details>
+      <div id="schedule-container"></div>
+    </div>
+
+    <div id="view-map" class="tab-view"><div id="map"></div></div>
+
+    <div id="view-bookings" class="tab-view">
+      <h2 class="view-title">🎫 예약 · 바우처</h2>
+      <p class="view-sub">숙소·항공·렌터카 예약 정보예요. 코드/PIN 등 민감정보는 여기에 두지 않아요.</p>
+      <div id="bookings-area"></div>
+      <button class="btn-add-item edit-only" data-action="bk-add">+ 예약 추가</button>
+    </div>
+
+    <div id="view-checklist" class="tab-view">
+      <h2 class="view-title">🎒 여행 준비물 체크리스트</h2>
+      <p class="view-sub">* - 버튼을 누르면 체크리스트에서 개별 삭제됩니다.</p>
+      <div id="checklist-render-area"></div>
+    </div>
+
+    <div id="view-expense" class="tab-view">
+      <h2 class="view-title">💸 금쪽이 정산소</h2>
+
+      <div class="exp-summary">
+        <div class="exp-label">전체 지출 (정산완료 포함)</div>
+        <div class="exp-value">$<span id="exp-total">0.00</span> <small id="exp-total-krw"></small></div>
+        <div class="sum-row"><span>✅ 정산완료</span><b id="exp-settled">$0.00</b></div>
+        <div class="sum-row"><span>⏳ 정산 대상 잔여</span><b id="exp-remain">$0.00</b></div>
+        <div class="rate-row">환율 1$ = <input type="number" id="exp-rate" inputmode="numeric" class="rate-input">원</div>
+      </div>
+
+      <div class="exp-card">
+        <h3 class="form-title">🤝 송금 가이드 (정산 대상 기준)</h3>
+        <div id="exp-transfers"></div>
+        <div id="exp-person-table"></div>
+      </div>
+
+      <div class="exp-card">
+        <h3 class="form-title">📊 카테고리별 지출</h3>
+        <div id="exp-categories"></div>
+      </div>
+
+      <div class="exp-list-container">
+        <h3 class="form-title" style="border:none">지출 상세 리스트</h3>
+        <div class="exp-filters">
+          <select id="exp-f-cat" class="form-input"></select>
+          <select id="exp-f-day" class="form-input"></select>
+          <select id="exp-f-state" class="form-input">
+            <option value="all">전체</option><option value="open">미정산</option><option value="done">정산완료</option>
+          </select>
+          <select id="exp-f-sort" class="form-input"><option value="new">최신순</option><option value="day">일차순</option></select>
+        </div>
+        <div id="exp-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <button id="fab-exp" class="editor-only" data-action="exp-add" title="지출 추가">＋</button>
+
+  <div id="bottom-nav">
+    <div class="nav-item active" data-tab="schedule"><span class="icon">📅</span><span>일정</span></div>
+    <div class="nav-item" data-tab="map"><span class="icon">🗺️</span><span>지도</span></div>
+    <div class="nav-item" data-tab="bookings"><span class="icon">🎫</span><span>예약</span></div>
+    <div class="nav-item" data-tab="checklist"><span class="icon">✅</span><span>준비물</span></div>
+    <div class="nav-item" data-tab="expense"><span class="icon">💸</span><span>정산</span></div>
+  </div>
+
+  <div id="sheet" class="sheet-overlay">
+    <div class="sheet-box">
+      <div class="sheet-head"><b id="sheet-title"></b><button id="sheet-x">✕</button></div>
+      <div id="sheet-body"></div>
+      <div id="sheet-actions"></div>
+    </div>
+  </div>
+
+  <div id="toast-msg"></div>
+
+  <div id="custom-confirm" class="modal-overlay">
+    <div class="modal-box" style="text-align:center;">
+      <p id="confirm-msg" style="margin-bottom:24px; font-weight:800; font-size:16px; line-height:1.4;"></p>
+      <div style="display:flex; gap:12px;">
+        <button id="confirm-cancel" class="mbtn mbtn-gray">취소</button>
+        <button id="confirm-ok" class="mbtn mbtn-red">확인</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="add-modal" class="modal-overlay">
+    <div class="modal-box">
+      <h3 id="add-modal-title" style="color:var(--primary); font-size:18px; font-weight:800; margin-bottom:20px;">항목 추가</h3>
+      <input type="text" id="add-input-1" class="minput">
+      <input type="text" id="add-input-addr" class="minput" placeholder="정확한 영문 주소 또는 구글맵 링크 (핀 위치용)" style="display:none">
+      <input type="text" id="add-input-2" class="minput" placeholder="간단한 설명 (선택사항)">
+      <div id="geocoding-loader">📍 구글맵에서 주소 찾는 중...</div>
+      <div style="display:flex; gap:12px;">
+        <button id="add-cancel" class="mbtn mbtn-gray">취소</button>
+        <button id="add-ok" class="mbtn mbtn-blue">저장하기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/util.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/store.js"></script>
+<script src="js/weather.js"></script>
+<script src="js/checklist.js"></script>
+<script src="js/bookings.js"></script>
+<script src="js/edit.js"></script>
+<script src="js/expense.js"></script>
+<script src="js/schedule.js"></script>
+<script src="js/map.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

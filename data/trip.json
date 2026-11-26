@@ -1,0 +1,876 @@
+{
+ "meta": {
+  "title": "금쪽이들의 세계정복",
+  "subtitle": "미국 서부 편",
+  "departure": "2026-12-25T18:00:00+09:00",
+  "members": [
+   "재훈",
+   "우찬",
+   "재윤",
+   "인성"
+  ],
+  "rate": 1400,
+  "tripStart": "2026-12-25",
+  "tripEnd": "2027-01-04",
+  "travelers": {
+   "재훈": "KWON JAEHOON",
+   "재윤": "KIM JAEYUN",
+   "우찬": "LEE WOOCHAN",
+   "인성": "MOON INSEONG"
+  },
+  "categories": [
+   [
+    "숙박",
+    "🏨"
+   ],
+   [
+    "교통",
+    "🚗"
+   ],
+   [
+    "식비",
+    "🍔"
+   ],
+   [
+    "카페",
+    "☕"
+   ],
+   [
+    "쇼핑",
+    "🛍️"
+   ],
+   [
+    "유흥",
+    "🎉"
+   ],
+   [
+    "기타",
+    "📦"
+   ]
+  ],
+  "version": "2026-11-26-v4"
+ },
+ "days": [
+  {
+   "id": 1,
+   "date": "2026-12-25",
+   "label": "1일차(12/25)",
+   "title": "1일차 | 인천 → 샌프란시스코",
+   "places": [
+    {
+     "id": "d1_1",
+     "name": "인천공항 (ICN) 출발",
+     "type": "visit",
+     "desc": "UA 892 · 18:00 출발 (날짜변경선을 넘어 같은 날 도착)",
+     "lat": 37.4602,
+     "lng": 126.4407,
+     "time": "18:00",
+     "nextDist": "10시간 45분 비행"
+    },
+    {
+     "id": "d1_2",
+     "name": "샌프란시스코 공항 (SFO) 도착",
+     "type": "visit",
+     "desc": "UA 892 도착 · 입국심사 후 시내 이동",
+     "lat": 37.6213,
+     "lng": -122.379,
+     "time": "11:45",
+     "nextDist": "약 35분 · 22km"
+    },
+    {
+     "id": "d1_3",
+     "name": "Hotel Caza Fisherman's Wharf",
+     "type": "sleep",
+     "desc": "체크인 16:00 이후 (1박) · 에어비앤비",
+     "lat": 37.8055,
+     "lng": -122.4182,
+     "time": "16:00",
+     "address": "1300 Columbus Ave, San Francisco, CA 94133",
+     "bookingId": "b_caza"
+    }
+   ],
+   "color": "#e11d48"
+  },
+  {
+   "id": 2,
+   "date": "2026-12-26",
+   "label": "2일차(12/26)",
+   "title": "2일차 | 샌프란시스코 → 라스베이거스 (비행)",
+   "places": [
+    {
+     "id": "d2_1",
+     "name": "Hotel Caza 체크아웃",
+     "type": "visit",
+     "desc": "체크아웃 12:00 · 짐 맡기고 시내 관광 가능",
+     "lat": 37.8055,
+     "lng": -122.4182,
+     "time": "12:00",
+     "address": "1300 Columbus Ave, San Francisco, CA 94133"
+    },
+    {
+     "id": "d2_2",
+     "name": "샌프란시스코 시내 관광",
+     "type": "visit",
+     "desc": "피셔맨스워프, 금문교 등 (장소 확정 시 추가)",
+     "lat": 37.8055,
+     "lng": -122.4182
+    },
+    {
+     "id": "d2_3",
+     "name": "샌프란시스코 공항 (SFO)",
+     "type": "visit",
+     "desc": "UA 406 · 21:05 출발 (직항 약 1시간 40분)",
+     "lat": 37.6213,
+     "lng": -122.379,
+     "time": "21:05",
+     "nextDist": "22:44 LAS 도착"
+    },
+    {
+     "id": "d2_4",
+     "name": "Luxor Hotel & Casino",
+     "type": "sleep",
+     "desc": "22:44 도착 · 늦은 체크인이라 호텔에 미리 연락 필요 (800-876-0006)",
+     "lat": 36.0955,
+     "lng": -115.1761,
+     "time": "22:44",
+     "address": "3900 Las Vegas Boulevard South, Las Vegas, NV 89119",
+     "bookingId": "b_luxor",
+     "warn": "체크인 당일 오후 9시 이후 도착 시 호텔에 직접 연락하지 않으면 예약이 취소될 수 있어요"
+    }
+   ],
+   "color": "#db2777"
+  },
+  {
+   "id": 3,
+   "date": "2026-12-27",
+   "label": "3일차(12/27)",
+   "title": "3일차 | 라스베이거스 전일",
+   "places": [
+    {
+     "id": "d3_1",
+     "name": "라스베이거스 자유 관광",
+     "type": "visit",
+     "desc": "스트립 호텔 투어 · 야경 (장소 확정 시 추가)",
+     "lat": 36.0955,
+     "lng": -115.1761
+    },
+    {
+     "id": "d3_2",
+     "name": "Luxor Hotel & Casino",
+     "type": "sleep",
+     "desc": "라스베이거스 연박 (2박째)",
+     "lat": 36.0955,
+     "lng": -115.1761,
+     "address": "3900 Las Vegas Boulevard South, Las Vegas, NV 89119",
+     "bookingId": "b_luxor"
+    }
+   ],
+   "color": "#9333ea"
+  },
+  {
+   "id": 4,
+   "date": "2026-12-28",
+   "label": "4일차(12/28)",
+   "title": "4일차 | 라스베이거스 → 자이언 → 카납",
+   "driveInfo": "약 340km, 약 4시간 (자이언 관광 제외, 대략치)",
+   "shortDrive": "340km (4h)",
+   "places": [
+    {
+     "id": "d4_1",
+     "name": "Sixt 렌터카 픽업 (LAS 공항)",
+     "type": "visit",
+     "desc": "07:00 픽업 · 렌터카 센터 셔틀 이용 · Luxor 체크아웃 11:00 전에 이동",
+     "lat": 36.0709,
+     "lng": -115.133,
+     "time": "07:00",
+     "address": "7135 Gilespie St, Suite A, Las Vegas, NV 89119-4273",
+     "approx": true,
+     "bookingId": "b_car",
+     "nextDist": "약 2시간 40분 · 270km"
+    },
+    {
+     "id": "d4_2",
+     "name": "자이언 캐니언 비지터 센터",
+     "type": "visit",
+     "desc": "트레킹 · 국립공원 연간 패스($250) 현장 구매",
+     "lat": 37.1995,
+     "lng": -112.9868,
+     "address": "1 Zion Park Blvd, Springdale, UT",
+     "nextDist": "약 1시간 · 65km"
+    },
+    {
+     "id": "d4_3",
+     "name": "카납 에어비앤비 (Kanab)",
+     "type": "sleep",
+     "desc": "체크인 15:00 이후 · 출입 코드는 에어비앤비 앱에서 확인",
+     "lat": 37.0475,
+     "lng": -112.5263,
+     "time": "15:00",
+     "address": "286 300 North, Kanab, UT 84741",
+     "approx": true,
+     "bookingId": "b_kanab"
+    }
+   ],
+   "color": "#7c3aed"
+  },
+  {
+   "id": 5,
+   "date": "2026-12-29",
+   "label": "5일차(12/29)",
+   "title": "5일차 | 카납 → 그랜드캐니언",
+   "driveInfo": "약 330km, 약 4시간 (대략치)",
+   "shortDrive": "330km (4h)",
+   "places": [
+    {
+     "id": "d5_1",
+     "name": "카납 체크아웃",
+     "type": "visit",
+     "desc": "체크아웃 11:00",
+     "lat": 37.0475,
+     "lng": -112.5263,
+     "time": "11:00",
+     "address": "286 300 North, Kanab, UT 84741",
+     "approx": true,
+     "nextDist": "약 4시간 · 330km"
+    },
+    {
+     "id": "d5_2",
+     "name": "Maswik Lodge (그랜드캐니언 내부)",
+     "type": "sleep",
+     "desc": "체크인 15:00 이후 · 오후 9시 이후 도착 시 호텔 연락",
+     "lat": 36.0535,
+     "lng": -112.1197,
+     "time": "15:00",
+     "address": "202 South Village Loop, Grand Canyon Village, AZ 86023",
+     "approx": true,
+     "bookingId": "b_maswik",
+     "warn": "체크인 당일 오후 9시 이후 도착 시 호텔에 연락 필요"
+    }
+   ],
+   "color": "#2563eb"
+  },
+  {
+   "id": 6,
+   "date": "2026-12-30",
+   "label": "6일차(12/30)",
+   "title": "6일차 | 그랜드캐니언 → 조슈아트리 → LA",
+   "driveInfo": "약 800km, 약 9시간+ (대략치, 장거리 주의!)",
+   "shortDrive": "800km (9h+)",
+   "places": [
+    {
+     "id": "d6_1",
+     "name": "Maswik Lodge 체크아웃",
+     "type": "visit",
+     "desc": "체크아웃 11:00 · 일출/뷰포인트 후 출발",
+     "lat": 36.0535,
+     "lng": -112.1197,
+     "time": "11:00",
+     "address": "202 South Village Loop, Grand Canyon Village, AZ 86023",
+     "approx": true,
+     "nextDist": "약 5시간 30분 · 560km"
+    },
+    {
+     "id": "d6_2",
+     "name": "조슈아트리 국립공원",
+     "type": "visit",
+     "desc": "경유 관광 (체류 시간 짧음)",
+     "lat": 33.8734,
+     "lng": -115.901,
+     "approx": true,
+     "nextDist": "약 2시간 30분 · 230km"
+    },
+    {
+     "id": "d6_3",
+     "name": "West Hollywood 에어비앤비",
+     "type": "sleep",
+     "desc": "체크인 15:00 이후 · LA Vibe 1BR (주차 가능)",
+     "lat": 34.0905,
+     "lng": -118.3607,
+     "time": "15:00",
+     "address": "1004 Poinsettia Place, West Hollywood, CA 90046",
+     "approx": true,
+     "bookingId": "b_weho"
+    }
+   ],
+   "color": "#059669"
+  },
+  {
+   "id": 7,
+   "date": "2026-12-31",
+   "label": "7일차(12/31)",
+   "title": "7일차 | LA · 유니버셜 스튜디오",
+   "places": [
+    {
+     "id": "d7_1",
+     "name": "유니버셜 스튜디오 할리우드",
+     "type": "visit",
+     "desc": "종일 · 입장권 예약 여부 확인",
+     "lat": 34.1381,
+     "lng": -118.3534,
+     "address": "100 Universal City Plaza, Universal City, CA 91608"
+    },
+    {
+     "id": "d7_2",
+     "name": "West Hollywood 에어비앤비",
+     "type": "sleep",
+     "desc": "연말 카운트다운",
+     "lat": 34.0905,
+     "lng": -118.3607,
+     "address": "1004 Poinsettia Place, West Hollywood, CA 90046",
+     "approx": true,
+     "bookingId": "b_weho"
+    }
+   ],
+   "color": "#d97706"
+  },
+  {
+   "id": 8,
+   "date": "2027-01-01",
+   "label": "8일차(1/1)",
+   "title": "8일차 | LA 주변 구경",
+   "places": [
+    {
+     "id": "d8_1",
+     "name": "LA 주변 관광",
+     "type": "visit",
+     "desc": "장소 미정 (확정 시 추가)",
+     "lat": 34.0905,
+     "lng": -118.3607,
+     "approx": true
+    },
+    {
+     "id": "d8_2",
+     "name": "West Hollywood 에어비앤비",
+     "type": "sleep",
+     "desc": "3박째",
+     "lat": 34.0905,
+     "lng": -118.3607,
+     "address": "1004 Poinsettia Place, West Hollywood, CA 90046",
+     "approx": true,
+     "bookingId": "b_weho"
+    }
+   ],
+   "color": "#ea580c"
+  },
+  {
+   "id": 9,
+   "date": "2027-01-02",
+   "label": "9일차(1/2)",
+   "title": "9일차 | LA 마무리 · 렌터카 반납",
+   "places": [
+    {
+     "id": "d9_1",
+     "name": "웨스트할리우드 체크아웃",
+     "type": "visit",
+     "desc": "체크아웃 11:00 · 주변 구경 또는 샌디에이고 (미정)",
+     "lat": 34.0905,
+     "lng": -118.3607,
+     "time": "11:00",
+     "address": "1004 Poinsettia Place, West Hollywood, CA 90046",
+     "approx": true
+    },
+    {
+     "id": "d9_2",
+     "name": "Sixt 렌터카 반납 (LAX)",
+     "type": "visit",
+     "desc": "23:00까지 반납 · 셔틀 이용",
+     "lat": 33.9496,
+     "lng": -118.383,
+     "time": "23:00",
+     "address": "5251 W 98th St, Los Angeles, CA 90045-5137",
+     "approx": true,
+     "bookingId": "b_car"
+    },
+    {
+     "id": "d9_3",
+     "name": "Hyatt Place LAX/Century Blvd",
+     "type": "sleep",
+     "desc": "체크인 16:00 이후 · 1/3 조식 포함 · 환불 불가",
+     "lat": 33.9456,
+     "lng": -118.3944,
+     "time": "16:00",
+     "address": "5959 W Century Blvd, Los Angeles, CA 90045",
+     "bookingId": "b_hyatt"
+    }
+   ],
+   "color": "#b91c1c"
+  },
+  {
+   "id": 10,
+   "date": "2027-01-03",
+   "label": "10일차(1/3)",
+   "title": "10일차 | LA → 샌프란 경유 → 귀국",
+   "places": [
+    {
+     "id": "d10_1",
+     "name": "LA 공항 (LAX) 출발",
+     "type": "visit",
+     "desc": "UA 1298 · 07:25 출발 (공항 최소 2~3시간 전 도착)",
+     "lat": 33.9416,
+     "lng": -118.4085,
+     "time": "07:25",
+     "nextDist": "1시간 34분 비행"
+    },
+    {
+     "id": "d10_2",
+     "name": "샌프란시스코 공항 (SFO) 환승",
+     "type": "visit",
+     "desc": "UA 1298 08:59 도착 → UA 893 10:20 출발 (환승 1시간 21분)",
+     "lat": 37.6213,
+     "lng": -122.379,
+     "time": "08:59",
+     "nextDist": "12시간 55분 비행"
+    }
+   ],
+   "color": "#0e7490"
+  },
+  {
+   "id": 11,
+   "date": "2027-01-04",
+   "label": "11일차(1/4)",
+   "title": "11일차 | 인천 도착",
+   "places": [
+    {
+     "id": "d11_1",
+     "name": "인천공항 (ICN) 도착",
+     "type": "visit",
+     "desc": "UA 893 · 16:15 도착",
+     "lat": 37.4602,
+     "lng": 126.4407,
+     "time": "16:15"
+    }
+   ],
+   "color": "#475569"
+  }
+ ],
+ "checklist": [
+  {
+   "category": "📄 필수 서류 & 결제",
+   "items": [
+    {
+     "id": "c1",
+     "label": "여권 (유효기간 6개월 이상 확인)"
+    },
+    {
+     "id": "c2",
+     "label": "미국 ESTA 비자 발급 및 출력물"
+    },
+    {
+     "id": "c3",
+     "label": "국제운전면허증 및 한국면허증 (운전자)"
+    },
+    {
+     "id": "c4",
+     "label": "해외결제 카드 (트래블월렛/로그 등)"
+    },
+    {
+     "id": "c5",
+     "label": "소액 달러 현금 (팁/비상용)"
+    }
+   ]
+  },
+  {
+   "category": "📱 전자기기",
+   "items": [
+    {
+     "id": "c6",
+     "label": "스마트폰 & 보조배터리"
+    },
+    {
+     "id": "c7",
+     "label": "차량용 충전기 및 케이블"
+    },
+    {
+     "id": "c8",
+     "label": "차량용 스마트폰 거치대 (내비용)"
+    },
+    {
+     "id": "c9",
+     "label": "110V 돼지코 변환 어댑터"
+    }
+   ]
+  },
+  {
+   "category": "👕 의류 및 잡화",
+   "items": [
+    {
+     "id": "c10",
+     "label": "겨울용 두꺼운 패딩 (캐니언 고지대 대비)"
+    },
+    {
+     "id": "c11",
+     "label": "편한 운동화 또는 트레킹화"
+    },
+    {
+     "id": "c12",
+     "label": "선글라스 및 모자 (사막 햇빛 대비)"
+    },
+    {
+     "id": "c13",
+     "label": "보습크림 및 립밤 (건조함 대비)"
+    }
+   ]
+  }
+ ],
+ "expenses": [
+  {
+   "id": "x_icn_재훈",
+   "day": "1일차",
+   "category": "교통",
+   "desc": "인천↔샌프란 왕복 항공 (재훈)",
+   "amount": 761.05,
+   "payer": "재훈",
+   "members": [
+    "재훈"
+   ],
+   "settled": true,
+   "note": "각자 결제"
+  },
+  {
+   "id": "x_icn_우찬",
+   "day": "1일차",
+   "category": "교통",
+   "desc": "인천↔샌프란 왕복 항공 (우찬)",
+   "amount": 761.05,
+   "payer": "우찬",
+   "members": [
+    "우찬"
+   ],
+   "settled": true,
+   "note": "각자 결제"
+  },
+  {
+   "id": "x_icn_재윤",
+   "day": "1일차",
+   "category": "교통",
+   "desc": "인천↔샌프란 왕복 항공 (재윤)",
+   "amount": 761.05,
+   "payer": "재윤",
+   "members": [
+    "재윤"
+   ],
+   "settled": true,
+   "note": "각자 결제"
+  },
+  {
+   "id": "x_icn_인성",
+   "day": "1일차",
+   "category": "교통",
+   "desc": "인천↔샌프란 왕복 항공 (인성)",
+   "amount": 761.05,
+   "payer": "인성",
+   "members": [
+    "인성"
+   ],
+   "settled": true,
+   "note": "각자 결제"
+  },
+  {
+   "id": "x_ua406",
+   "day": "2일차",
+   "category": "교통",
+   "desc": "SFO→LAS 항공 (UA406, 4인)",
+   "amount": 696,
+   "payer": "재훈",
+   "members": [
+    "재훈",
+    "우찬",
+    "재윤",
+    "인성"
+   ],
+   "settled": false,
+   "bookingId": "b_flight_lv"
+  },
+  {
+   "id": "x_caza",
+   "day": "1일차",
+   "category": "숙박",
+   "desc": "Hotel Caza (샌프란)",
+   "amount": 164,
+   "payer": "재훈",
+   "members": [
+    "재훈",
+    "우찬",
+    "재윤",
+    "인성"
+   ],
+   "settled": false,
+   "bookingId": "b_caza"
+  },
+  {
+   "id": "x_luxor",
+   "day": "2일차",
+   "category": "숙박",
+   "desc": "Luxor (라스베이거스 2박)",
+   "amount": 267,
+   "payer": "재훈",
+   "members": [
+    "재훈",
+    "우찬",
+    "재윤",
+    "인성"
+   ],
+   "settled": false,
+   "bookingId": "b_luxor",
+   "breakdown": [
+    {
+     "label": "선결제(Priceline)",
+     "amount": 165
+    },
+    {
+     "label": "현장 결제 예정(리조트피 등 · 확인 필요)",
+     "amount": 102
+    }
+   ]
+  },
+  {
+   "id": "x_car",
+   "day": "4일차",
+   "category": "교통",
+   "desc": "Sixt 렌터카 6일",
+   "amount": 429.25,
+   "payer": "재훈",
+   "members": [
+    "재훈",
+    "우찬",
+    "재윤",
+    "인성"
+   ],
+   "settled": false,
+   "note": "추가요금 별도",
+   "bookingId": "b_car"
+  },
+  {
+   "id": "x_kanab",
+   "day": "4일차",
+   "category": "숙박",
+   "desc": "카납 에어비앤비",
+   "amount": 189,
+   "payer": "재훈",
+   "members": [
+    "재훈",
+    "우찬",
+    "재윤",
+    "인성"
+   ],
+   "settled": false,
+   "bookingId": "b_kanab"
+  },
+  {
+   "id": "x_maswik",
+   "day": "5일차",
+   "category": "숙박",
+   "desc": "Maswik Lodge (그랜드캐니언)",
+   "amount": 427.59,
+   "payer": "재훈",
+   "members": [
+    "재훈",
+    "우찬",
+    "재윤",
+    "인성"
+   ],
+   "settled": false,
+   "bookingId": "b_maswik"
+  },
+  {
+   "id": "x_weho",
+   "day": "6일차",
+   "category": "숙박",
+   "desc": "West Hollywood 숙소 (3박)",
+   "amount": 863,
+   "payer": "재훈",
+   "members": [
+    "재훈",
+    "우찬",
+    "재윤",
+    "인성"
+   ],
+   "settled": false,
+   "bookingId": "b_weho"
+  },
+  {
+   "id": "x_hyatt",
+   "day": "9일차",
+   "category": "숙박",
+   "desc": "Hyatt Place LAX",
+   "amount": 188.16,
+   "payer": "재훈",
+   "members": [
+    "재훈",
+    "우찬",
+    "재윤",
+    "인성"
+   ],
+   "settled": false,
+   "bookingId": "b_hyatt",
+   "breakdown": [
+    {
+     "label": "객실",
+     "amount": 161.93
+    },
+    {
+     "label": "세금·서비스",
+     "amount": 26.23
+    }
+   ]
+  }
+ ],
+ "bookings": [
+  {
+   "id": "b_flight_in",
+   "type": "flight",
+   "title": "인천 → 샌프란시스코 (UA 892)",
+   "date": "2026-12-25",
+   "time": "18:00 → 11:45",
+   "amount": 761.05,
+   "amountNote": "1인당 $761.05 (왕복, 각자 결제)",
+   "payer": "각자",
+   "split": "individual",
+   "note": "좌석 각자 확인"
+  },
+  {
+   "id": "b_flight_lv",
+   "type": "flight",
+   "title": "SFO → LAS (UA 406)",
+   "date": "2026-12-26",
+   "time": "21:05 → 22:44",
+   "amount": 696,
+   "amountNote": "4인 합계",
+   "payer": null,
+   "split": "all"
+  },
+  {
+   "id": "b_flight_out",
+   "type": "flight",
+   "title": "LAX → SFO → ICN (UA 1298 / UA 893)",
+   "date": "2027-01-03",
+   "time": "07:25 → 1/4 16:15",
+   "amount": null,
+   "note": "왕복 항공권에 포함"
+  },
+  {
+   "id": "b_caza",
+   "type": "stay",
+   "title": "Hotel Caza Fisherman's Wharf",
+   "site": "Airbnb",
+   "checkIn": "2026-12-25 16:00",
+   "checkOut": "2026-12-26 12:00",
+   "address": "1300 Columbus Ave, San Francisco, CA 94133",
+   "confirmation": "HMFZWHA3WN",
+   "amount": 164,
+   "payer": null,
+   "split": "all"
+  },
+  {
+   "id": "b_luxor",
+   "type": "stay",
+   "title": "Luxor Hotel & Casino",
+   "site": "Priceline",
+   "checkIn": "2026-12-26 15:00",
+   "checkOut": "2026-12-28 11:00",
+   "address": "3900 Las Vegas Boulevard South, Las Vegas, NV 89119",
+   "confirmation": "1080913270",
+   "phone": "800-876-0006",
+   "amount": 267,
+   "paidNow": 165,
+   "amountNote": "총 $267 (선결제 $165)",
+   "cancelDeadline": "2026-12-22 23:59",
+   "payer": null,
+   "split": "all",
+   "warn": "오후 9시 이후 도착 시 호텔에 연락 필요",
+   "breakdown": [
+    {
+     "label": "선결제(Priceline)",
+     "amount": 165
+    },
+    {
+     "label": "현장 결제 예정(리조트피 등 · 확인 필요)",
+     "amount": 102
+    }
+   ]
+  },
+  {
+   "id": "b_car",
+   "type": "car",
+   "title": "Sixt 렌터카 (Mid-size SUV, RAV4 급)",
+   "site": "Priceline",
+   "checkIn": "2026-12-28 07:00",
+   "checkOut": "2027-01-02 23:00",
+   "address": "픽업: LAS 7135 Gilespie St, Suite A / 반납: LAX 5251 W 98th St",
+   "confirmation": "9741872204",
+   "phone": "+1-888-749-8227",
+   "amount": 429.25,
+   "amountNote": "$429.25 + 추가요금 가능",
+   "payer": null,
+   "split": "all"
+  },
+  {
+   "id": "b_kanab",
+   "type": "stay",
+   "title": "카납 에어비앤비",
+   "site": "Airbnb",
+   "checkIn": "2026-12-28 15:00",
+   "checkOut": "2026-12-29 11:00",
+   "address": "286 300 North, Kanab, UT 84741",
+   "confirmation": "HMM85C34KZ",
+   "amount": 189,
+   "payer": null,
+   "split": "all",
+   "note": "출입문 코드는 에어비앤비 앱에서 확인"
+  },
+  {
+   "id": "b_maswik",
+   "type": "stay",
+   "title": "Maswik Lodge (그랜드캐니언 내부)",
+   "site": "Priceline",
+   "checkIn": "2026-12-29 15:00",
+   "checkOut": "2026-12-30 11:00",
+   "address": "202 South Village Loop, Grand Canyon Village, AZ 86023",
+   "confirmation": "5720187905",
+   "amount": 427.59,
+   "cancelDeadline": "2026-12-26 23:59",
+   "payer": null,
+   "split": "all",
+   "warn": "오후 9시 이후 도착 시 호텔 연락 필요"
+  },
+  {
+   "id": "b_weho",
+   "type": "stay",
+   "title": "West Hollywood 숙소 (LA Vibe 1BR)",
+   "site": "Airbnb",
+   "checkIn": "2026-12-30 15:00",
+   "checkOut": "2027-01-02 11:00",
+   "address": "1004 Poinsettia Place, West Hollywood, CA 90046",
+   "confirmation": "HMW3HZNTMB",
+   "amount": 863,
+   "payer": null,
+   "split": "all"
+  },
+  {
+   "id": "b_hyatt",
+   "type": "stay",
+   "title": "Hyatt Place LAX/Century Blvd",
+   "site": "Trip.com",
+   "checkIn": "2027-01-02 16:00",
+   "checkOut": "2027-01-03 11:00",
+   "address": "5959 W Century Blvd, Los Angeles, CA 90045",
+   "confirmation": "1400830277053747",
+   "phone": "+1-310-258-9000",
+   "amount": 188.16,
+   "cancelDeadline": "환불 불가",
+   "payer": null,
+   "split": "all",
+   "note": "퀸 2개 · 성인 4명 · 1/3 조식 포함",
+   "breakdown": [
+    {
+     "label": "객실",
+     "amount": 161.93
+    },
+    {
+     "label": "세금·서비스",
+     "amount": 26.23
+    }
+   ]
+  }
+ ]
+}
