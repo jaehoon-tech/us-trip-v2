@@ -3,7 +3,7 @@ const Schedule = {
 
   mapUrl(p) { return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.address || p.name)}`; },
   routeUrl(places) {
-    const pts = places.filter(p => p.lat != null && p.lng != null).filter((p, i, a) => i === 0 || p.lat !== a[i - 1].lat || p.lng !== a[i - 1].lng);
+    const pts = places.filter(p => !p.far && p.lat != null && p.lng != null).filter((p, i, a) => i === 0 || p.lat !== a[i - 1].lat || p.lng !== a[i - 1].lng);
     if (pts.length < 2) return pts[0] ? `https://www.google.com/maps/search/?api=1&query=${pts[0].lat},${pts[0].lng}` : '#';
     return 'https://www.google.com/maps/dir/' + pts.map(p => `${p.lat},${p.lng}`).join('/');
   },
@@ -50,7 +50,7 @@ const Schedule = {
       const places = Store.getPlaces(day.id);
       const items = places.map((p, idx) => `
         <div class="timeline-item" data-pid="${esc(p.id)}">
-          <div class="timeline-number">${p.type === 'sleep' ? '🏠' : idx + 1}</div>
+          <div class="timeline-number">${p.type === 'sleep' ? '🏠' : p.type === 'flight' ? '✈️' : idx + 1}</div>
           <div class="timeline-content"><div class="timeline-info">
             <div class="timeline-title">${p.time ? `<span class="tl-time">${esc(p.time)}</span> ` : ''}${Edit.typeIcon(p.type)}${esc(p.name)}</div>
             ${p.desc ? `<div class="timeline-desc">${esc(p.desc)}</div>` : ''}
@@ -69,7 +69,7 @@ const Schedule = {
               </span>
             </div>
           </div></div>
-          ${idx < places.length - 1 && p.nextDist ? `<div class="timeline-distance">🚗 ${esc(p.nextDist)}</div>` : ''}
+          ${idx < places.length - 1 && p.nextDist ? `<div class="timeline-distance">${p.nextMode === 'flight' ? '✈️' : p.nextMode === 'walk' ? '🚶' : '🚗'} ${esc(p.nextDist)}</div>` : ''}
         </div>`).join('');
       return `<div class="day-card ${this.isVisible(day.id) ? '' : 'hidden'}" id="card-day-${day.id}">
         <div class="day-header">
