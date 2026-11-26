@@ -1,9 +1,9 @@
 // 서비스워커: 오프라인에서도 일정/예약/정산이 열리게 캐시
 // 앱 파일을 바꿨다면 VERSION 숫자를 올려주세요 (옛 캐시 정리)
-const VERSION = 'v9';
+const VERSION = 'v10';
 const CACHE = 'us-trip-' + VERSION;
 const SHELL = ['./', 'index.html', 'css/style.css', 'manifest.webmanifest', 'img/4man_trip.jpg', 'data/trip.json',
-  'js/config.js', 'js/util.js', 'js/theme.js', 'js/store.js', 'js/weather.js', 'js/checklist.js', 'js/bookings.js', 'js/edit.js',
+  'js/config.js', 'js/util.js', 'js/theme.js', 'js/store.js', 'js/shared.js', 'js/weather.js', 'js/checklist.js', 'js/bookings.js', 'js/edit.js',
   'js/expense.js', 'js/extras.js', 'js/schedule.js', 'js/map.js', 'js/app.js', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/icon-180.png'];
 
 self.addEventListener('install', e => {
