@@ -90,10 +90,10 @@ const Expense = {
     };
     $('exp-list').innerHTML = list.length ? list.map(e => head(e) + `
       <div class="exp-item ${e.settled ? 'settled' : ''}">
-        <input type="checkbox" class="settle-chk" data-action="exp-settle" data-id="${esc(e.id)}" ${e.settled ? 'checked' : ''} title="정산완료">
+        <input type="checkbox" class="settle-chk" data-action="exp-settle" data-id="${esc(e.id)}" ${e.settled ? 'checked' : ''} ${(!e.shared && !Edit.isEditor) ? 'disabled' : ''} title="정산완료">
         <div class="exp-info" data-action="exp-edit" data-id="${esc(e.id)}">
           <div class="exp-name">${this.icon(e.category)} ${esc(e.category)} | ${esc(e.desc)}${Receipts.has(e.id) ? ` <span class="rcpt" data-action="exp-receipt" data-id="${esc(e.id)}">📎</span>` : ''}</div>
-          <div class="exp-meta">${esc(Store.dayText(e.day))} · 💳 ${esc(e.payer)} · 👥 ${e.members.length === Store.trip.meta.members.length ? '전체' : esc(e.members.join(', '))}${e.note ? ' · ' + esc(e.note) : ''}</div>
+          <div class="exp-meta">${esc(Store.dayText(e.day))} · 💳 ${esc(e.payer)} · 👥 ${e.members.length === Store.trip.meta.members.length ? '전체' : esc(e.members.join(', '))}${e.note ? ' · ' + esc(e.note) : ''}${e.shared && e.by ? ' · ✍️ ' + esc(e.by) : ''}</div>
           ${e.breakdown && e.breakdown.length ? `<div class="exp-bd">${e.breakdown.map(x => `${esc(x.label)} ${this.fmt(x.amount)}`).join(' + ')}</div>` : ''}
         </div>
         <div class="exp-amount">${this.fmt(e.amount)}<small>≈${Math.round(e.amount * this.rate() / 10000 * 10) / 10}만</small></div>
@@ -102,7 +102,10 @@ const Expense = {
 
   // 지출 추가/수정 시트 (편집자 전용)
   sheet(id) {
-    const e = id ? Store.trip.expenses.find(x => String(x.id) === String(id)) : null;
+    const sh = id && Shared.enabled ? Shared.cache.expenses[id] : null;
+    const e = id ? (sh || Store.trip.expenses.find(x => String(x.id) === String(id))) : null;
+    const isShared = !!sh || (!id && Shared.enabled);
+    const canDel = e && (isShared ? Shared.mine(e) : Edit.isEditor);
     const members = Store.trip.meta.members;
     const today = Schedule.todayDay();
     Sheet.open({
@@ -112,19 +115,26 @@ const Expense = {
         { key: 'desc', label: '내용', value: e ? e.desc : '', ph: '예: 인앤아웃 버거' },
         { key: 'category', label: '카테고리', type: 'select', value: e ? e.category : '식비', options: this.cats().map(([c, i]) => ({ v: c, l: `${i} ${c}` })) },
         { key: 'day', label: '일차', type: 'select', value: e ? e.day : (today ? today + '일차' : '1일차'), options: Store.trip.days.map(d => ({ v: d.id + '일차', l: Store.dayText(d.id) })) },
-        { key: 'payer', label: '결제한 사람', type: 'select', value: e ? e.payer : (LS.get('usTripLastPayer', members[0])), options: members.map(m => ({ v: m, l: m })) },
+        { key: 'payer', label: '결제한 사람', type: 'select', value: e ? e.payer : (Shared.enabled && Shared.me ? Shared.me : LS.get('usTripLastPayer', members[0])), options: members.map(m => ({ v: m, l: m })) },
         { key: 'members', label: '정산 포함 인원', type: 'checks', options: members, value: e ? e.members : members },
         { key: 'receipt', label: '📷 영수증 사진 (이 기기에만 저장, 공개 안 됨)', type: 'file' }
       ],
       buttons: [
         ...(e && Receipts.has(e.id) ? [{ label: '사진 삭제', fn: async () => { await Receipts.del(e.id); Sheet.close(); this.render(); showToast('사진을 지웠어요'); } }] : []),
-        ...(e ? [{ label: '삭제', cls: 'mbtn-red', fn: () => { Sheet.close(); this.remove(e.id); } }] : [])
+        ...(canDel ? [{ label: '삭제', cls: 'mbtn-red', fn: () => { Sheet.close(); this.remove(e.id); } }] : [])
       ],
       onSave: async v => {
         const amount = parseFloat(v.amount);
         if (!v.desc || isNaN(amount) || amount <= 0) return showToast('내용과 올바른 금액을 입력해주세요.');
         if (!v.members.length) return showToast('정산 포함 인원을 1명 이상 선택해주세요.');
         const data = { day: v.day, category: v.category, desc: v.desc, amount, payer: v.payer, members: v.members };
+        if (isShared) {
+          const rid = e ? e.id : Shared.newId('x_');
+          Shared.put('expenses', rid, { ...(e || {}), ...data, settled: e ? !!e.settled : false, by: e ? e.by : Shared.me });
+          if (v.receipt) { try { await Receipts.put(rid, await Receipts.shrink(v.receipt)); } catch (x) { showToast('⚠️ 사진 저장 실패'); } }
+          LS.set('usTripLastPayer', v.payer); Sheet.close(); this.render(); showToast(e ? '수정되었습니다' : '지출이 등록되었어요 · 모두에게 보여요 ✅');
+          return;
+        }
         if (e) { Object.assign(e, data); }
         let rid = e && e.id;
         if (!e) { rid = 'x_' + Date.now(); Store.trip.expenses.push({ id: rid, settled: false, ...data }); }
@@ -140,8 +150,23 @@ const Expense = {
     if (r.tr.length) r.tr.forEach(t => lines.push(`${t.from} ➔ ${t.to}  $${t.amt.toFixed(2)} (≈${Math.round(t.amt * this.rate()).toLocaleString()}원)`)); else lines.push('송금할 내역 없음 🎉');
     copyText(lines.join('\n'));
   },
-  settle(id, v) { const e = Store.trip.expenses.find(x => String(x.id) === String(id)); if (e) { e.settled = v; Store.save(); } this.render(); },
+  openEdit(id) {
+    const sh = Shared.enabled ? Shared.cache.expenses[id] : null;
+    if (sh ? !Shared.mine(sh) : !Edit.isEditor) return showToast(sh ? '추가한 사람만 수정할 수 있어요' : '편집자만 수정할 수 있어요');
+    this.sheet(id);
+  },
+  settle(id, v) {
+    const sh = Shared.enabled ? Shared.cache.expenses[id] : null;
+    if (sh) { Shared.put('expenses', id, { ...sh, settled: v }); this.render(); return; }
+    if (!Edit.isEditor) { this.render(); return showToast('편집자만 바꿀 수 있어요'); }
+    const e = Store.trip.expenses.find(x => String(x.id) === String(id)); if (e) { e.settled = v; Store.save(); } this.render();
+  },
   remove(id) {
+    const sh = Shared.enabled ? Shared.cache.expenses[id] : null;
+    if (sh) {
+      if (!Shared.mine(sh)) return showToast('추가한 사람만 삭제할 수 있어요');
+      return showConfirm('이 지출 내역을 삭제하시겠습니까? (모두에게서 사라져요)', () => { Shared.del('expenses', id); this.render(); });
+    }
     showConfirm('이 지출 내역을 삭제하시겠습니까?', () => {
       Store.trip.expenses = Store.trip.expenses.filter(e => String(e.id) !== String(id));
       Store.save(); this.render();
