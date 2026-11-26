@@ -124,3 +124,18 @@ function flightLinks(text) {
   const set = new Set(); String(text || '').replace(/\bUA\s?(\d{2,4})\b/g, (m, n) => set.add(n));
   return [...set].map(n => `<a class="btn-gmap fl" target="_blank" rel="noopener" href="https://www.flightaware.com/live/flight/UAL${n}">🛫 UA${n} 운항현황</a>`).join(' ');
 }
+
+// 편집자 등록/해제: 상단 배너를 빠르게 5번 탭 (설치형 앱처럼 주소에 ?edit=1 을 못 붙일 때 사용)
+(() => {
+  const el = document.getElementById('dday-banner'); if (!el) return;
+  let taps = 0, timer;
+  el.addEventListener('click', () => {
+    taps++; clearTimeout(timer); timer = setTimeout(() => taps = 0, 1500);
+    if (taps < 5) return;
+    taps = 0;
+    const on = localStorage.getItem('usTripEditor') === '1';
+    if (on) localStorage.removeItem('usTripEditor'); else localStorage.setItem('usTripEditor', '1');
+    showToast(on ? '편집자 모드를 해제했어요' : '✅ 이 기기를 편집자로 등록했어요');
+    setTimeout(() => location.reload(), 800);
+  });
+})();
