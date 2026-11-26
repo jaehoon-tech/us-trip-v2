@@ -21,7 +21,7 @@ const MapView = {
     { featureType: 'poi', stylers: [{ visibility: 'off' }] }],
   applyTheme() { if (this.map) this.map.setOptions({ styles: Theme.isDark() ? this.DARK : null }); },
   icon(type, i) {
-    const bg = type === 'sleep' ? '#2563eb' : '#f59e0b', text = type === 'sleep' ? '🏠' : i + 1, fs = type === 'sleep' ? 14 : 18;
+    const bg = type === 'sleep' ? '#2563eb' : type === 'flight' ? '#0891b2' : '#f59e0b', text = type === 'sleep' ? '🏠' : type === 'flight' ? '✈️' : i + 1, fs = (type === 'sleep' || type === 'flight') ? 14 : 18;
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="42" viewBox="0 0 36 48"><path fill="${bg}" stroke="#fff" stroke-width="2.5" d="M18 0C8.06 0 0 8.06 0 18c0 13.5 18 30 18 30s18-16.5 18-30C36 8.06 27.94 0 18 0z"/><text x="18" y="24" font-size="${fs}" font-weight="900" text-anchor="middle" fill="#fff" font-family="sans-serif">${text}</text></svg>`;
     return { url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg), scaledSize: new google.maps.Size(32, 42), anchor: new google.maps.Point(16, 42) };
   },
@@ -32,8 +32,20 @@ const MapView = {
     const bounds = new google.maps.LatLngBounds(); let has = false;
     Store.trip.days.forEach(day => {
       if (!Schedule.isVisible(day.id)) return;
-      const coords = [];
-      Store.getPlaces(day.id).forEach((p, i) => {
+      const coords = [], places = Store.getPlaces(day.id);
+      const ghostOf = n => ({ lat: n.lat + 1.5, lng: n.lng - 9 }); // 한국 같은 먼 곳은 서쪽 바다 쪽 가상 지점으로 표현
+      const badge = (pos, text) => {
+        const w = 18 + text.length * 13, svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="26"><rect width="${w}" height="26" rx="13" fill="#0891b2" fill-opacity="0.95" stroke="#fff" stroke-width="2"/><text x="${w / 2}" y="18" font-size="12" font-weight="bold" fill="#fff" text-anchor="middle" font-family="sans-serif">${text}</text></svg>`;
+        this.markers.push(new google.maps.Marker({ position: pos, map: this.map, zIndex: 95, icon: { url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg), anchor: new google.maps.Point(w / 2, 13) } }));
+      };
+      places.forEach((p, i) => {
+        if (p.far) {
+          const nb = places.find((q, j) => j !== i && !q.far && q.lat != null && q.lng != null);
+          if (!nb) return;
+          const g = ghostOf(nb); coords.push(g); bounds.extend(g); has = true;
+          badge(g, `✈️ ${p.farLabel || '먼 곳'}`);
+          return;
+        }
         if (p.lat == null || p.lng == null) return;
         const pos = { lat: p.lat, lng: p.lng };
         coords.push(pos); bounds.extend(pos); has = true;
@@ -47,6 +59,7 @@ const MapView = {
           this.info.setContent(box); this.info.open(this.map, m);
         });
         this.markers.push(m);
+        if (p.farNext) { const g = ghostOf(p); coords.push(g); bounds.extend(g); badge(g, `✈️ ${p.farNext}`); }
       });
       if (coords.length > 1) {
         this.lines.push(new google.maps.Polyline({ path: coords, geodesic: true, strokeColor: day.color, strokeOpacity: 0, strokeWeight: 3,
